@@ -35,7 +35,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     profile_file_path = f'profiles/{user_id}.md'
     if not os.path.exists(profile_file_path):
         with open(profile_file_path, 'w') as file:
-            file.write('')
+            file.write(f'Profile of @{username}: ')
             print(f'SYSTEM: No profile for the user. Creating a blank one...')
     profile = open(profile_file_path, 'r').read()
 
@@ -95,7 +95,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 max_tokens=None,
                 request_timeout=60
                 )
-            new_profile = summarize_completion['choices'][0]['message']['content']
+            new_profile = f'Profile of @{username}: ' + summarize_completion['choices'][0]['message']['content']
             with open(profile_file_path, 'w') as file:
                 file.write(new_profile)
             with open(history_file_path, 'w') as file:
