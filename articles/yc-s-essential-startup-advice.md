@@ -49,32 +49,22 @@ It is also important to stay sane during the inevitable craziness of startup lif
 - Be nice! Or at least don’t be a jerk
 - Get sleep and exercise - take care of yourself
 
+Sure, here's the same article without the blank lines:
+
 ## References
-1. Do Things That Don’t Scale by Paul Graham ↩
-
-2. Don’t Talk to Corp Dev by Paul Graham ↩
-
-3. How Not To Fail by Jessica Livingston ↩
-
-4. The Post YC Slump by Sam Altman ↩
-
-5. Users You Don’t Want by Michael Seibel ↩
-
-6. The Real Product Market Fit by Michael Seibel ↩
-
-7. Unit Economics by Sam Altman ↩
-
-8. Startup Priorities by Geoff Ralston ↩
-
-9. A Guide to Seed Fundraising by Geoff Ralston. ↩
-
-10. Fundraising Rounds are not Milestones by Michael Seibel ↩
-
-11. Mean People Fail by Paul Graham ↩
+1. Do Things That Don’t Scale by Paul Graham
+2. Don’t Talk to Corp Dev by Paul Graham
+3. How Not To Fail by Jessica Livingston
+4. The Post YC Slump by Sam Altman
+5. Users You Don’t Want by Michael Seibel
+6. The Real Product Market Fit by Michael Seibel
+7. Unit Economics by Sam Altman
+8. Startup Priorities by Geoff Ralston
+9. A Guide to Seed Fundraising by Geoff Ralston
+10. Fundraising Rounds are not Milestones by Michael Seibel
+11. Mean People Fail by Paul Graham
 
 ## Recommended Reading
 1. A Fundraising Survival Guide by Paul Graham
-
 2. How to Raise Money by Paul Graham
-
 3. Taking Advice by Aaron Harris
