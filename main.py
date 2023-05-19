@@ -30,8 +30,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         with open(history_file_path, 'w') as file:
             file.write('')
             print(f'SYSTEM: No history chat for the user. Creating a blank one...')
-    with open(history_file_path, 'r') as file:
-        chat_history = file.read()
+    chat_history = open(history_file_path, 'r').read()
 
     # load user profile, if none, create a blank one
     profile_file_path = f'profiles/{user_id}.md'
@@ -39,13 +38,11 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         with open(profile_file_path, 'w') as file:
             file.write('')
             print(f'SYSTEM: No profile for the user. Creating a blank one...')
-    with open(profile_file_path, 'r') as file:
-        profile = file.read()
+    profile = open(profile_file_path, 'r').read()
 
     # load ai persona
     persona_file_path = f'persona_store/persona.md'
-    with open(persona_file_path, 'r') as file:
-        ai_persona = file.read()
+    ai_persona = open(persona_file_path, 'r').read()
 
     # build the prompt for llm
     prompt = pe.prompt_builder(
@@ -80,14 +77,12 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     # if chat history is too long, use llm to turn it into a summary of the user
     # but keep the latest 16 lines of the chat history
-    with open(history_file_path, 'r') as file:
-        chat_history = file.read()
+    chat_history = open(history_file_path, 'r').read()
     if len(chat_history) > 4096:
         print(f'SYSTEM: Chat history too long ({len(chat_history)} chrs). Summarizing new profile...')
         # load ai summarizer
         summarizer_file_path = f'persona_store/summarizer.md'
-        with open(summarizer_file_path, 'r') as file:
-            summarizer = file.read()
+        summarizer = open(summarizer_file_path, 'r').read()
         summarizer_prompt = pe.chat_history_summarizer(
             summarizer=summarizer,
             old_summary=profile,
