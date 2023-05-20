@@ -170,7 +170,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
         ### send message to chat room ###
         await context.bot.send_message(chat_id=chat_id, text=message_text)
-        print(f'AI REPLY: {message_text}')
+        print(f'AI MESSAGE: {message_text}')
 
         # record the reply of the bot itself in groupchat history
         with open(history_file_path, 'a') as file:
