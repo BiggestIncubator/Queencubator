@@ -10,6 +10,16 @@ def prompt_builder(ai_persona:str, patient_profile:str, chat_history:str, human_
     return prompt
 
 
+def prompt_builder_group_chat(ai_persona:str, chat_history:str) -> str:
+    """Build the final prompt to feed into an LLM"""
+
+    prompt = f'{ai_persona}\n'
+    prompt += f'\nChat:\n{chat_history}\n'
+    prompt += f'You:'
+
+    return prompt
+
+
 def chat_history_summarizer(summarizer:str, old_summary:str, new_chat_history:str) -> str:
     """Create summary for chat history to save token usage"""
 
