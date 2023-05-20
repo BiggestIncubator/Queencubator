@@ -1,8 +1,8 @@
 import os
 import openai
+import random
 import prompt_engineering as pe # from prompt_engineering.py
 from dotenv import load_dotenv
-from collections import deque
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -15,7 +15,7 @@ from telegram.ext import (
 
 async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
-    ############### Direct Messages ################
+    ############### Dialogues ################
     if update.message.chat.type == 'private': # 'private' chats are Direct Messages from users
         username = str(update.message.from_user.username)
         
@@ -26,8 +26,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         human_input = update.message.text
         print(f'\n@{username}({user_id}): {human_input}')
 
-        # load chat history, if none, create a blank one
-        history_file_path = f'history/{user_id}.md'
+        # load dialogue history, if none, create a blank one
+        history_file_path = f'history/dialogues/{user_id}.md'
         if not os.path.exists(history_file_path):
             with open(history_file_path, 'w') as file:
                 file.write('')
@@ -109,32 +109,40 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 print(f'SYSTEM: Failed to summarize new profile. Will try next time.')
     
     
-    ############### Group Chats ################
+    ############### Groupchats ################
     elif update.message.chat.type in ['group', 'supergroup']: # for group chats
-        message_text = update.message.text
-        
-        # only reply to longer messages because they are likely to be more serious
-        # but if it contains 'my queen', still reply to it
-        if len(message_text) < 69:
-            if 'my queen' not in message_text.lower():
-                return ### it seems that we can't just return. we have to save text in file for future use.
 
         username = update.message.from_user.username
-        
-        chat_id = update.message.chat_id
-
         user_id = update.message.from_user.id
-
+        chat_id = update.message.chat_id
+        message_text = update.message.text
         print(f'\n@{username}({user_id}): {message_text}')
 
+        # load groupchat history, if none, create a blank one
+        history_file_path = f'history/groupchats/{user_id}.md'
+        if not os.path.exists(history_file_path):
+            with open(history_file_path, 'w') as file:
+                file.write('')
+                print(f'SYSTEM: No history chat for the user. Creating a blank one...')
+        # write new message into groupchat history
+        with open(history_file_path, 'a') as file:
+            file.write(f'\n@{username}: {message_text}')
+        # prune chat history to the latest 21 messages
+        chat_history_lines = open(history_file_path, 'r').read().splitlines()
+        if len(chat_history_lines) > 21:
+            chat_history_lines = chat_history_lines[-21:]
+        chat_history = "\n".join(chat_history_lines)
+        # save pruned chat history
+        with open(history_file_path, 'w') as file:
+            file.write(chat_history)
 
-        # Store messages in a deque with a maximum length of 21
-        if 'messages' not in context.chat_data:
-            context.chat_data['messages'] = deque(maxlen=21)
-
-        context.chat_data['messages'].append(f'@{username}: {message_text}')
-        chat_history = '\n'.join(context.chat_data.get('messages', []))
-
+        # the bot has a 1/21 chance of replying
+        if random.randint(1, 21) != 1: 
+            # but if it contains summon spell, still reply
+            if os.getenv("SUMMON_SPELL") not in message_text.lower():
+                return # abort mission
+        
+        ######## the actual reply ########
 
         # load ai persona
         persona_file_path = f'prompt_store/personae/{os.getenv("PERSONA")}/group_chat.md'
@@ -163,6 +171,10 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         ### send message to chat room ###
         await context.bot.send_message(chat_id=chat_id, text=message_text)
         print(f'AI REPLY: {message_text}')
+
+        # record the reply of the bot itself in groupchat history
+        with open(history_file_path, 'a') as file:
+            file.write(f'\n@{os.getenv("TELEGRAM_USERNAME")}: {message_text}')
 
 
 async def start(update: Update):
