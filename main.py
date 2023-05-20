@@ -49,7 +49,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         # build the prompt for llm
         prompt = pe.prompt_builder(
             ai_persona=ai_persona,
-            patient_profile=profile,
+            human_profile=profile,
             chat_history=chat_history,
             human_input=human_input
             )
@@ -116,18 +116,23 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         # only reply to longer messages because they are likely to be more serious
         # but if it contains 'my queen', still reply to it
         if len(message_text) < 69:
-            if message_text[:8].lower() != 'my queen':
-                return
+            if 'my queen' not in message_text.lower():
+                return ### it seems that we can't just return. we have to save text in file for future use.
 
-        user_name = update.message.from_user.username
+        username = update.message.from_user.username
         
         chat_id = update.message.chat_id
+
+        user_id = update.message.from_user.id
+
+        print(f'\n@{username}({user_id}): {message_text}')
+
 
         # Store messages in a deque with a maximum length of 21
         if 'messages' not in context.chat_data:
             context.chat_data['messages'] = deque(maxlen=21)
 
-        context.chat_data['messages'].append(f'@{user_name}: {message_text}')
+        context.chat_data['messages'].append(f'@{username}: {message_text}')
         chat_history = '\n'.join(context.chat_data.get('messages', []))
 
 
