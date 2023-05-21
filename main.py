@@ -44,7 +44,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         profile = open(profile_file_path, 'r').read()
 
         # load ai persona
-        persona_file_path = f'prompts/personae/{os.getenv("PERSONA")}/persona.md'
+        persona_file_path = f'personae/{os.getenv("PERSONA")}/persona.md'
         ai_persona = open(persona_file_path, 'r').read()
 
         # build the prompt for llm
@@ -67,7 +67,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 )
             reply_text = completion['choices'][0]['message']['content']
         except:
-            reply_text = open(f'prompts/personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
+            reply_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
             print('SYSTEM: Failed to call OpenAI API!')
 
         ### send reply back to user on telegram ###
@@ -84,7 +84,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if len(chat_history) > 4096:
             print(f'SYSTEM: Chat history too long ({len(chat_history)} chrs). Summarizing new profile...')
             # load ai summarizer
-            summarizer_file_path = f'prompts/personae/{os.getenv("PERSONA")}/summarizer.md'
+            summarizer_file_path = f'personae/{os.getenv("PERSONA")}/summarizer.md'
             summarizer = open(summarizer_file_path, 'r').read()
             summarizer_prompt = pe.chat_history_summarizer(
                 summarizer=summarizer,
@@ -141,7 +141,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             file.write(chat_history)
 
         # load persona metadata
-        metadata = json.loads(open(f'prompts/personae/{os.getenv("PERSONA")}/metadata.json', 'r').read())
+        metadata = json.loads(open(f'personae/{os.getenv("PERSONA")}/metadata.json', 'r').read())
 
         # the bot has a certain chance of replying any message
         # reply frequency (integer) is mesured in basis points (0.01%)
@@ -159,7 +159,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         ######## the actual reply ########
 
         # load ai persona
-        persona_file_path = f'prompts/personae/{os.getenv("PERSONA")}/group_chat.md'
+        persona_file_path = f'personae/{os.getenv("PERSONA")}/group_chat.md'
         ai_persona = open(persona_file_path, 'r').read()
 
         # build prompt for llm
@@ -180,7 +180,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 )
             message_text = completion['choices'][0]['message']['content']
         except:
-            message_text = open(f'prompts/personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
+            message_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
             print('SYSTEM: Failed to call OpenAI API!')
 
         ### send message to chat room ###
@@ -193,12 +193,12 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def start(update: Update):
-    start_text = open(f'prompts/personae/{os.getenv("PERSONA")}/start_text.md', 'r').read()
+    start_text = open(f'personae/{os.getenv("PERSONA")}/start_text.md', 'r').read()
     await update.message.reply_text(start_text)
 
 
 async def help(update: Update):
-    start_text = open(f'prompts/personae/{os.getenv("PERSONA")}/start_text.md', 'r').read()
+    start_text = open(f'personae/{os.getenv("PERSONA")}/start_text.md', 'r').read()
     await update.message.reply_text(start_text)
 
 
