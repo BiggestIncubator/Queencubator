@@ -1,6 +1,6 @@
 {
   "persona": "queencubator",
   "telegram_username": "QueencubatorBot",
-  "summon_spell": "my queen",
+  "summon_spells": ["my queen", "your queen", "the queen", "majesty"],
   "reply_frequency": 420
 }

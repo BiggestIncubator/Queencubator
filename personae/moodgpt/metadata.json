@@ -1,6 +1,6 @@
 {
   "persona": "moodgpt",
   "telegram_username": "MoodGPTbot",
-  "summon_spell": "moodgpt",
+  "summon_spells": ["moodgpt", "therapist"],
   "reply_frequency": 420
 }

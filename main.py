@@ -143,18 +143,27 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         # load persona metadata
         metadata = json.loads(open(f'personae/{os.getenv("PERSONA")}/metadata.json', 'r').read())
 
+        ### Decide whether to reply message ###
+        is_reply = False
+
         # the bot has a certain chance of replying any message
         # reply frequency (integer) is mesured in basis points (0.01%)
         # thus, if reply_frequency is 420, there's a 420 / 10000 = 4.2% chance of it replying
         reply_frequency = int(metadata['reply_frequency'])
-        if random.randint(1, 10000) < reply_frequency: 
+        if random.randint(1, 10000) < reply_frequency:
+            is_reply = True
             print(f'SYSTEM: Bot randomly decides to reply to this message...')
-        else:
-            # but if it contains summon spell, still reply
-            if metadata['summon_spell'] in message_text.lower():
+
+        # if user message contains summon spells, reply
+        for summon_spell in metadata['summon_spells']:
+            if summon_spell in message_text.lower():
                 print(f'SYSTEM: summon spell detected. Bot replying...')
-            else:
-                return # abort mission
+                is_reply = True
+                break
+        
+        # filter out messages not to reply to
+        if is_reply != True:
+            return
         
         ######## the actual reply ########
 
