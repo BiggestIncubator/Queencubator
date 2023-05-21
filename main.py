@@ -139,10 +139,17 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         with open(history_file_path, 'w') as file:
             file.write(chat_history)
 
-        # the bot has a 1/21 chance of replying
-        if random.randint(1, 21) != 1: 
+        # the bot has a certain chance of replying any message
+        # reply frequency (integer) is mesured in basis points (0.01%)
+        # thus, if reply_frequency is 420, there's a 420 / 10000 = 4.2% chance of it replying
+        reply_frequency = int(os.getenv("REPLY_FREQUENCY"))
+        if random.randint(1, 10000) < reply_frequency: 
+            print(f'SYSTEM: Bot randomly decides to reply to this message...')
+        else:
             # but if it contains summon spell, still reply
-            if os.getenv("SUMMON_SPELL") not in message_text.lower():
+            if os.getenv("SUMMON_SPELL") in message_text.lower():
+                print(f'SYSTEM: summon spell detected. Bot replying...')
+            else:
                 return # abort mission
         
         ######## the actual reply ########
@@ -154,6 +161,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         # build prompt for llm
         prompt = pe.prompt_builder_group_chat(
             ai_persona=ai_persona,
+            ai_id=f'@{os.getenv("TELEGRAM_USERNAME")}',
             chat_history=chat_history
         )
         # feed prompt to openai api llm

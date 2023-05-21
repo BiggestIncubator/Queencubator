@@ -10,12 +10,12 @@ def prompt_builder(ai_persona:str, human_profile:str, chat_history:str, human_in
     return prompt
 
 
-def prompt_builder_group_chat(ai_persona:str, chat_history:str) -> str:
+def prompt_builder_group_chat(ai_persona:str, ai_id:str, chat_history:str) -> str:
     """Build the final prompt to feed into an LLM"""
 
     prompt = f'{ai_persona}\n'
     prompt += f'\nChat:\n{chat_history}\n'
-    prompt += f'You:'
+    prompt += f'{ai_id}:'
 
     return prompt
 
