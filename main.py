@@ -27,7 +27,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         print(f'\n@{username}({user_id}): {human_input}')
 
         # load dialogue history, if none, create a blank one
-        history_file_path = f'history/dialogues/{user_id}.md'
+        history_file_path = f'memories/dialogues/{user_id}.md'
         if not os.path.exists(history_file_path):
             with open(history_file_path, 'w') as file:
                 file.write('')
@@ -35,7 +35,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         chat_history = open(history_file_path, 'r').read()
 
         # load user profile, if none, create a blank one
-        profile_file_path = f'profiles/{user_id}.md'
+        profile_file_path = f'memories/profiles/{user_id}.md'
         if not os.path.exists(profile_file_path):
             with open(profile_file_path, 'w') as file:
                 file.write(f'Profile of @{username}: ')
@@ -122,7 +122,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         print(f'\n@{username}({user_id}): {message_text}')
 
         # load groupchat history, if none, create a blank one
-        history_file_path = f'history/groupchats/{chat_id}.md'
+        history_file_path = f'memories/groupchats/{chat_id}.md'
         if not os.path.exists(history_file_path):
             with open(history_file_path, 'w') as file:
                 file.write('')
