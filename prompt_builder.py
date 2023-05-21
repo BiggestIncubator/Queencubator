@@ -1,5 +1,4 @@
-def prompt_builder(ai_persona:str, human_profile:str, chat_history:str, human_input:str) -> str:
-    """Build the final prompt to feed into an LLM"""
+def dialogue(ai_persona:str, human_profile:str, chat_history:str, human_input:str) -> str:
 
     prompt = f'{ai_persona}\n'
     prompt += f'\nProfile:\n{human_profile}\n'
@@ -10,18 +9,16 @@ def prompt_builder(ai_persona:str, human_profile:str, chat_history:str, human_in
     return prompt
 
 
-def prompt_builder_group_chat(ai_persona:str, ai_id:str, chat_history:str) -> str:
-    """Build the final prompt to feed into an LLM"""
+def groupchat(ai_persona:str, ai_id:str, chat_history:str) -> str:
 
     prompt = f'{ai_persona}\n'
     prompt += f'\nChat:\n{chat_history}\n'
-    prompt += f'{ai_id}:'
+    prompt += f'You:'
 
     return prompt
 
 
-def chat_history_summarizer(summarizer:str, old_summary:str, new_chat_history:str) -> str:
-    """Create summary for chat history to save token usage"""
+def summary(summarizer:str, old_summary:str, new_chat_history:str) -> str:
 
     summary = f'{summarizer}\n'
     summary += f'\nPrevious Profile:\n{old_summary}\n'

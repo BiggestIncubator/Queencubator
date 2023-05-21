@@ -2,7 +2,7 @@ import os
 import json
 import openai
 import random
-import prompt_engineering as pe # from prompt_engineering.py
+import prompt_builder # from prompt_builder.py
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import (
@@ -48,7 +48,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         ai_persona = open(persona_file_path, 'r').read()
 
         # build the prompt for llm
-        prompt = pe.prompt_builder(
+        prompt = prompt_builder.dialogue(
             ai_persona=ai_persona,
             human_profile=profile,
             chat_history=chat_history,
@@ -86,7 +86,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             # load ai summarizer
             summarizer_file_path = f'personae/{os.getenv("PERSONA")}/summarizer.md'
             summarizer = open(summarizer_file_path, 'r').read()
-            summarizer_prompt = pe.chat_history_summarizer(
+            summarizer_prompt = prompt_builder.summary(
                 summarizer=summarizer,
                 old_summary=profile,
                 new_chat_history=chat_history
@@ -163,7 +163,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         ai_persona = open(persona_file_path, 'r').read()
 
         # build prompt for llm
-        prompt = pe.prompt_builder_group_chat(
+        prompt = prompt_builder.groupchat(
             ai_persona=ai_persona,
             ai_id=f'@{os.getenv("TELEGRAM_USERNAME")}',
             chat_history=chat_history
