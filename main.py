@@ -116,10 +116,13 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         user_id = update.message.from_user.id
         chat_id = update.message.chat_id
         message_text = update.message.text
+        message_text = message_text.replace('\n', '') # remove line breaks
+        if len(message_text) > 420: # if message too long, only keep first 420 chrs
+            message_text = message_text[:417] + '...'
         print(f'\n@{username}({user_id}): {message_text}')
 
         # load groupchat history, if none, create a blank one
-        history_file_path = f'history/groupchats/{user_id}.md'
+        history_file_path = f'history/groupchats/{chat_id}.md'
         if not os.path.exists(history_file_path):
             with open(history_file_path, 'w') as file:
                 file.write('')
