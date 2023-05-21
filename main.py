@@ -1,4 +1,5 @@
 import os
+import json
 import openai
 import random
 import prompt_engineering as pe # from prompt_engineering.py
@@ -139,15 +140,18 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         with open(history_file_path, 'w') as file:
             file.write(chat_history)
 
+        # load persona metadata
+        metadata = json.loads(open(f'prompts/personae/{os.getenv("PERSONA")}/metadata.json', 'r').read())
+
         # the bot has a certain chance of replying any message
         # reply frequency (integer) is mesured in basis points (0.01%)
         # thus, if reply_frequency is 420, there's a 420 / 10000 = 4.2% chance of it replying
-        reply_frequency = int(os.getenv("REPLY_FREQUENCY"))
+        reply_frequency = int(metadata['reply_frequency'])
         if random.randint(1, 10000) < reply_frequency: 
             print(f'SYSTEM: Bot randomly decides to reply to this message...')
         else:
             # but if it contains summon spell, still reply
-            if os.getenv("SUMMON_SPELL") in message_text.lower():
+            if metadata['summon_spell'] in message_text.lower():
                 print(f'SYSTEM: summon spell detected. Bot replying...')
             else:
                 return # abort mission
@@ -165,7 +169,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             chat_history=chat_history
         )
         # feed prompt to openai api llm
-        openai.api_key = os.getenv('OPENAI_API_KEY')
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         try:
             completion = openai.ChatCompletion.create(
                 model='gpt-3.5-turbo', 
@@ -185,7 +189,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
         # record the reply of the bot itself in groupchat history
         with open(history_file_path, 'a') as file:
-            file.write(f'\n@{os.getenv("TELEGRAM_USERNAME")}: {message_text}')
+            file.write(f'\n@{metadata["telegram_username"]}: {message_text}')
 
 
 async def start(update: Update):
@@ -200,7 +204,7 @@ async def help(update: Update):
 
 def main():
     load_dotenv()
-    app = ApplicationBuilder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
+    app = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     app.add_handler(CommandHandler('start', start))
     app.add_handler(CommandHandler('help', help))
     app.add_handler(MessageHandler(filters.TEXT, chat))
