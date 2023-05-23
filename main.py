@@ -3,7 +3,6 @@ import json
 import time
 import openai
 import random
-import prompt_builder # from prompt_builder.py
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import (
@@ -28,6 +27,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         human_input = update.message.text
         print(f'\n@{username}({user_id}): {human_input}')
 
+
+        print(os.getenv("PERSONA"))
         # load dialogue history, if none, create a blank one
         history_folder = f'memories/dialogues/{os.getenv("PERSONA")}'
         if not os.path.exists(history_folder):
@@ -55,12 +56,11 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         ai_persona = open(persona_file_path, 'r').read()
 
         # build the prompt for llm
-        prompt = prompt_builder.dialogue(
-            ai_persona=ai_persona,
-            human_profile=profile,
-            chat_history=chat_history,
-            human_input=human_input
-            )
+        prompt = f'{ai_persona}\n'
+        prompt += f'\nProfile:\n{profile}\n'
+        prompt += f'\nRecent Chat:\n{chat_history}\n'
+        prompt += f'Human: {human_input}\n'
+        prompt += f'AI:'
 
         # feed prompt to openai api llm
         openai.api_key = os.getenv('OPENAI_API_KEY')
@@ -101,11 +101,12 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             # load ai summarizer
             summarizer_file_path = f'personae/{os.getenv("PERSONA")}/summarizer.md'
             summarizer = open(summarizer_file_path, 'r').read()
-            summarizer_prompt = prompt_builder.summary(
-                summarizer=summarizer,
-                old_summary=profile,
-                new_chat_history=chat_history
-                )
+
+            # build summarizer prompt for llm
+            summarizer_prompt = f'{summarizer}\n'
+            summarizer_prompt += f'\nPrevious Profile:\n{profile}\n'
+            summarizer_prompt += f'\nRecent Chat History:\n{new_chat_history}\n'
+
             try:
                 summarize_completion = openai.ChatCompletion.create(
                     model='gpt-3.5-turbo', 
@@ -192,10 +193,10 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         ai_persona = open(persona_file_path, 'r').read()
 
         # build prompt for llm
-        prompt = prompt_builder.groupchat(
-            ai_persona=ai_persona,
-            chat_history=chat_history
-        )
+        prompt = f'{ai_persona}\n'
+        prompt += f'\nChat:\n{chat_history}\n'
+        prompt += f'You:'
+
         # feed prompt to openai api llm
         openai.api_key = os.getenv("OPENAI_API_KEY")
         # retry multiple times because the API is unstable
@@ -218,7 +219,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if retries == max_retries:
             print('Max retries exceeded. Giving up.')
             message_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
-            
+
         ### send message to chat room ###
         await context.bot.send_message(chat_id=chat_id, text=message_text)
         print(f'AI MESSAGE: {message_text}')
@@ -248,7 +249,8 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def main():
     load_dotenv()
-    app = ApplicationBuilder().token(os.getenv(f'TG_BOT_TOKEN_{os.getenv("PERSONA")}')).build()
+    print(f'SYSTEM: running {os.getenv("PERSONA")}...')
+    app = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     app.add_handler(CommandHandler('start', start))
     app.add_handler(CommandHandler('help', help))
     app.add_handler(MessageHandler(filters.TEXT, chat))
