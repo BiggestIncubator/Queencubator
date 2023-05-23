@@ -9,7 +9,7 @@ def dialogue(ai_persona:str, human_profile:str, chat_history:str, human_input:st
     return prompt
 
 
-def groupchat(ai_persona:str, ai_id:str, chat_history:str) -> str:
+def groupchat(ai_persona:str, chat_history:str) -> str:
 
     prompt = f'{ai_persona}\n'
     prompt += f'\nChat:\n{chat_history}\n'

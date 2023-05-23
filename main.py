@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import openai
 import random
 import prompt_builder # from prompt_builder.py
@@ -131,21 +132,24 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         print(f'\n@{username}({user_id}): {message_text}')
 
         # load groupchat history, if none, create a blank one
-        history_file_path = f'memories/groupchats/{chat_id}.md'
-        if not os.path.exists(history_file_path):
-            with open(history_file_path, 'w') as file:
+        groupchat_folder = f'memories/groupchats/{os.getenv("PERSONA")}'
+        if not os.path.exists(groupchat_folder):
+            os.makedirs(groupchat_folder)
+        groupchat_file_path = f'{groupchat_folder}/{chat_id}.md'
+        if not os.path.exists(groupchat_file_path):
+            with open(groupchat_file_path, 'w') as file:
                 file.write('')
                 print(f'SYSTEM: No history chat for the user. Creating a blank one...')
         # write new message into groupchat history
-        with open(history_file_path, 'a') as file:
+        with open(groupchat_file_path, 'a') as file:
             file.write(f'\n@{username}: {message_text}')
         # prune chat history to the latest 21 messages
-        chat_history_lines = open(history_file_path, 'r').read().splitlines()
+        chat_history_lines = open(groupchat_file_path, 'r').read().splitlines()
         if len(chat_history_lines) > 21:
             chat_history_lines = chat_history_lines[-21:]
         chat_history = "\n".join(chat_history_lines)
         # save pruned chat history
-        with open(history_file_path, 'w') as file:
+        with open(groupchat_file_path, 'w') as file:
             file.write(chat_history)
 
         # load persona metadata
@@ -182,7 +186,6 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         # build prompt for llm
         prompt = prompt_builder.groupchat(
             ai_persona=ai_persona,
-            ai_id=f'@{os.getenv("TELEGRAM_USERNAME")}',
             chat_history=chat_history
         )
         # feed prompt to openai api llm
@@ -204,9 +207,17 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await context.bot.send_message(chat_id=chat_id, text=message_text)
         print(f'AI MESSAGE: {message_text}')
 
+        # wait a while for other bots to finish updating their folders
+        time.sleep(random.randint(6, 10))
+
         # record the reply of the bot itself in groupchat history
-        with open(history_file_path, 'a') as file:
-            file.write(f'\n@{metadata["telegram_username"]}: {message_text}')
+        # append the bot reply to every single groupchat record (because telegram restrictions)
+        groupchats_folder = f'memories/groupchats' # the mother folder
+        for folder in os.listdir(groupchats_folder):
+            if os.path.isdir(f'{groupchats_folder}/{folder}'):
+                certain_groupchat_file_path = f'{groupchats_folder}/{folder}/{chat_id}.md'
+                with open(certain_groupchat_file_path, 'a') as file:
+                    file.write(f'\n@{metadata["telegram_username"]}: {message_text}')
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
