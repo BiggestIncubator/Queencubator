@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+    moodgpt:
+        container_name: queencubator
+        image: ${REGISTRY:?REGISTRY is required}queencubator:${TAG_QUEEN:?TAG_QUEEN is required}
+        volumes:
+        - ./memories:/Queencubator/memories
+        - ./personae:/Queencubator/personae
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        env_file:
+            - .env
+        command:
+            python ./main.py
