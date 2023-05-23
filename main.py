@@ -201,12 +201,12 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             file.write(f'\n@{metadata["telegram_username"]}: {message_text}')
 
 
-async def start(update: Update):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     start_text = open(f'personae/{os.getenv("PERSONA")}/start_text.md', 'r').read()
     await update.message.reply_text(start_text)
 
 
-async def help(update: Update):
+async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     start_text = open(f'personae/{os.getenv("PERSONA")}/start_text.md', 'r').read()
     await update.message.reply_text(start_text)
 
