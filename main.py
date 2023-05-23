@@ -28,7 +28,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         print(f'\n@{username}({user_id}): {human_input}')
 
         # load dialogue history, if none, create a blank one
-        history_file_path = f'memories/dialogues/{user_id}.md'
+        history_file_path = f'memories/dialogues/{os.getenv("PERSONA")}/{user_id}.md'
         if not os.path.exists(history_file_path):
             with open(history_file_path, 'w') as file:
                 file.write('')
@@ -36,7 +36,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         chat_history = open(history_file_path, 'r').read()
 
         # load user profile, if none, create a blank one
-        profile_file_path = f'memories/profiles/{user_id}.md'
+        profile_file_path = f'memories/profiles/{os.getenv("PERSONA")}/{user_id}.md'
         if not os.path.exists(profile_file_path):
             with open(profile_file_path, 'w') as file:
                 file.write(f'Profile of @{username}: ')
@@ -112,6 +112,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     
     ############### Groupchats ################
     elif update.message.chat.type in ['group', 'supergroup']: # for group chats
+        if update.message.from_user.is_bot:
+            print(update.message.text)
 
         username = update.message.from_user.username
         user_id = update.message.from_user.id
@@ -213,7 +215,7 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def main():
     load_dotenv()
-    app = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
+    app = ApplicationBuilder().token(os.getenv(f'TG_BOT_TOKEN_{os.getenv("PERSONA")}')).build()
     app.add_handler(CommandHandler('start', start))
     app.add_handler(CommandHandler('help', help))
     app.add_handler(MessageHandler(filters.TEXT, chat))
