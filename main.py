@@ -64,18 +64,26 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
         # feed prompt to openai api llm
         openai.api_key = os.getenv('OPENAI_API_KEY')
-        try:
-            completion = openai.ChatCompletion.create(
-                model='gpt-3.5-turbo', 
-                messages=[{'role': 'user', 'content': prompt}],
-                temperature=1,
-                max_tokens=None,
-                request_timeout=60
-                )
-            reply_text = completion['choices'][0]['message']['content']
-        except:
+        # retry multiple times because the API is unstable
+        max_retries = 10
+        retries = 0
+        while retries < max_retries:
+            try:
+                completion = openai.ChatCompletion.create(
+                    model='gpt-3.5-turbo', 
+                    messages=[{'role': 'user', 'content': prompt}],
+                    temperature=1,
+                    max_tokens=None,
+                    request_timeout=60
+                    )
+                reply_text = completion['choices'][0]['message']['content']
+                break
+            except:
+                print('SYSTEM: Failed to call OpenAI API! Retrying in 3 seconds...')
+                time.sleep(3)
+        if retries == max_retries:
+            print('Max retries exceeded. Giving up.')
             reply_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
-            print('SYSTEM: Failed to call OpenAI API!')
 
         ### send reply back to user on telegram ###
         await update.message.reply_text(f'{reply_text}')
@@ -190,19 +198,27 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         )
         # feed prompt to openai api llm
         openai.api_key = os.getenv("OPENAI_API_KEY")
-        try:
-            completion = openai.ChatCompletion.create(
-                model='gpt-3.5-turbo', 
-                messages=[{'role': 'user', 'content': prompt}],
-                temperature=1,
-                max_tokens=None,
-                request_timeout=60
-                )
-            message_text = completion['choices'][0]['message']['content']
-        except:
+        # retry multiple times because the API is unstable
+        max_retries = 10
+        retries = 0
+        while retries < max_retries:
+            try:
+                completion = openai.ChatCompletion.create(
+                    model='gpt-3.5-turbo', 
+                    messages=[{'role': 'user', 'content': prompt}],
+                    temperature=1,
+                    max_tokens=None,
+                    request_timeout=60
+                    )
+                message_text = completion['choices'][0]['message']['content']
+                break
+            except:
+                print('SYSTEM: Failed to call OpenAI API! Retrying in 3 seconds...')
+                time.sleep(3)
+        if retries == max_retries:
+            print('Max retries exceeded. Giving up.')
             message_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
-            print('SYSTEM: Failed to call OpenAI API!')
-
+            
         ### send message to chat room ###
         await context.bot.send_message(chat_id=chat_id, text=message_text)
         print(f'AI MESSAGE: {message_text}')
