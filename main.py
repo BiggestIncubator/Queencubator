@@ -28,7 +28,10 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         print(f'\n@{username}({user_id}): {human_input}')
 
         # load dialogue history, if none, create a blank one
-        history_file_path = f'memories/dialogues/{os.getenv("PERSONA")}/{user_id}.md'
+        history_folder = f'memories/dialogues/{os.getenv("PERSONA")}'
+        if not os.path.exists(history_folder):
+            os.makedirs(history_folder)
+        history_file_path = f'{history_folder}/{user_id}.md'
         if not os.path.exists(history_file_path):
             with open(history_file_path, 'w') as file:
                 file.write('')
@@ -36,7 +39,10 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         chat_history = open(history_file_path, 'r').read()
 
         # load user profile, if none, create a blank one
-        profile_file_path = f'memories/profiles/{os.getenv("PERSONA")}/{user_id}.md'
+        profile_folder = f'memories/profiles/{os.getenv("PERSONA")}'
+        if not os.path.exists(profile_folder):
+            os.makedirs(profile_folder)
+        profile_file_path = f'{profile_folder}/{user_id}.md'
         if not os.path.exists(profile_file_path):
             with open(profile_file_path, 'w') as file:
                 file.write(f'Profile of @{username}: ')
