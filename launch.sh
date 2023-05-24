@@ -1,8 +1,11 @@
 #!/bin/bash
-for f in /scripts/*.sh
+
+script_dir=$(dirname "$0")
+
+for f in "$script_dir"/scripts/*.sh
 do
     if [ -f "$f" ]; then
         chmod +x "$f"
-        "$f" &
+        konsole -e "$f" &
     fi
 done
