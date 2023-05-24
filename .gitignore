@@ -3,3 +3,5 @@ memories/
 scripts/
 *.pyc
 .env
+*.sh
+*.bat
