@@ -11,4 +11,5 @@ services:
  #       env_file:
  #           - .env
         command:
-            python3 ./main.py
+             ./launch.sh
+ #           python3 main.py
