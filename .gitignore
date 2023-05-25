@@ -1,3 +1,5 @@
 __pycache__/
+memories/
+scripts/
 *.pyc
 .env
