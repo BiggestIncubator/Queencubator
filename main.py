@@ -25,10 +25,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
         # take telegram user dm for llm input 
         human_input = update.message.text
-        print(f'\n@{username}({user_id}): {human_input}')
+        print(f'\n({os.getenv("PERSONA")})@{username}({user_id}): {human_input}')
 
-
-        print(os.getenv("PERSONA"))
         # load dialogue history, if none, create a blank one
         history_folder = f'memories/dialogues/{os.getenv("PERSONA")}'
         if not os.path.exists(history_folder):
@@ -37,7 +35,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if not os.path.exists(history_file_path):
             with open(history_file_path, 'w') as file:
                 file.write('')
-                print(f'SYSTEM: No history chat for the user. Creating a blank one...')
+                print(f'({os.getenv("PERSONA")})SYSTEM: No history chat for the user. Creating a blank one...')
         chat_history = open(history_file_path, 'r').read()
 
         # load user profile, if none, create a blank one
@@ -48,7 +46,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if not os.path.exists(profile_file_path):
             with open(profile_file_path, 'w') as file:
                 file.write(f'Profile of @{username}: ')
-                print(f'SYSTEM: No profile for the user. Creating a blank one...')
+                print(f'({os.getenv("PERSONA")})SYSTEM: No profile for the user. Creating a blank one...')
         profile = open(profile_file_path, 'r').read()
 
         # load ai persona
@@ -79,15 +77,15 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 reply_text = completion['choices'][0]['message']['content']
                 break
             except:
-                print('SYSTEM: Failed to call OpenAI API! Retrying in 3 seconds...')
+                print(f'({os.getenv("PERSONA")})SYSTEM: Failed to call OpenAI API! Retrying in 3 seconds...')
                 time.sleep(3)
         if retries == max_retries:
-            print('Max retries exceeded. Giving up.')
+            print(f'({os.getenv("PERSONA")})SYSTEM: Max retries exceeded. Giving up.')
             reply_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
 
         ### send reply back to user on telegram ###
         await update.message.reply_text(f'{reply_text}')
-        print(f'AI REPLY: {reply_text}')
+        print(f'({os.getenv("PERSONA")})REPLY: {reply_text}')
 
         # save new chat history
         with open(history_file_path, 'a') as file:
@@ -97,7 +95,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         # but keep the latest 16 lines of the chat history
         chat_history = open(history_file_path, 'r').read()
         if len(chat_history) > 4096:
-            print(f'SYSTEM: Chat history too long ({len(chat_history)} chrs). Summarizing new profile...')
+            print(f'({os.getenv("PERSONA")})SYSTEM: Chat history too long ({len(chat_history)} chrs). Summarizing new profile...')
             # load ai summarizer
             summarizer_file_path = f'personae/{os.getenv("PERSONA")}/summarizer.md'
             summarizer = open(summarizer_file_path, 'r').read()
@@ -121,16 +119,13 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 with open(history_file_path, 'w') as file:
                     new_chat_history = chat_history.splitlines()[-16:]
                     file.write("\n".join(new_chat_history))
-                print(f'SYSTEM: New profile made. Chat history pruned.')
+                print(f'({os.getenv("PERSONA")})SYSTEM: New profile made. Chat history pruned.')
             except:
-                print(f'SYSTEM: Failed to summarize new profile. Will try next time.')
+                print(f'({os.getenv("PERSONA")})SYSTEM: Failed to summarize new profile. Will try next time.')
     
     
     ############### Groupchats ################
     elif update.message.chat.type in ['group', 'supergroup']: # for group chats
-        if update.message.from_user.is_bot:
-            print(update.message.text)
-
         username = update.message.from_user.username
         user_id = update.message.from_user.id
         chat_id = update.message.chat_id
@@ -138,7 +133,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         message_text = message_text.replace('\n', '') # remove line breaks
         if len(message_text) > 420: # if message too long, only keep first 420 chrs
             message_text = message_text[:417] + '...'
-        print(f'\n@{username}({user_id}): {message_text}')
+        print(f'\n({os.getenv("PERSONA")})@{username}({user_id}): {message_text}')
 
         # load groupchat history, if none, create a blank one
         groupchat_folder = f'memories/groupchats/{os.getenv("PERSONA")}'
@@ -148,7 +143,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if not os.path.exists(groupchat_file_path):
             with open(groupchat_file_path, 'w') as file:
                 file.write('')
-                print(f'SYSTEM: No history chat for the user. Creating a blank one...')
+                print(f'({os.getenv("PERSONA")})SYSTEM: No history chat for the user. Creating a blank one...')
         # write new message into groupchat history
         with open(groupchat_file_path, 'a') as file:
             file.write(f'\n@{username}: {message_text}')
@@ -173,12 +168,12 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         reply_frequency = int(metadata['reply_frequency'])
         if random.randint(1, 10000) < reply_frequency:
             is_reply = True
-            print(f'SYSTEM: Bot randomly decides to reply to this message...')
+            print(f'({os.getenv("PERSONA")})SYSTEM: Bot randomly decides to reply to this message...')
 
         # if user message contains summon spells, reply
         for summon_spell in metadata['summon_spells']:
             if summon_spell in message_text.lower():
-                print(f'SYSTEM: summon spell detected. Bot replying...')
+                print(f'({os.getenv("PERSONA")})SYSTEM: summon spell detected. Bot replying...')
                 is_reply = True
                 break
         
@@ -214,15 +209,15 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 message_text = completion['choices'][0]['message']['content']
                 break
             except:
-                print('SYSTEM: Failed to call OpenAI API! Retrying in 3 seconds...')
+                print(f'({os.getenv("PERSONA")})SYSTEM: Failed to call OpenAI API! Retrying in 3 seconds...')
                 time.sleep(3)
         if retries == max_retries:
-            print('Max retries exceeded. Giving up.')
+            print(f'({os.getenv("PERSONA")})SYSTEM: Max retries exceeded. Giving up.')
             message_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
 
         ### send message to chat room ###
         await context.bot.send_message(chat_id=chat_id, text=message_text)
-        print(f'AI MESSAGE: {message_text}')
+        print(f'({os.getenv("PERSONA")})AI MESSAGE: {message_text}')
 
         # wait a while for other bots to finish updating their folders
         time.sleep(random.randint(6, 10))
