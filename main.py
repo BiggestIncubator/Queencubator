@@ -138,6 +138,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         username = update.message.from_user.username
         user_id = update.message.from_user.id
         chat_id = update.message.chat_id
+        thread_id = update.message.message_thread_id # if in group topics
         message_text = update.message.text
         message_text = message_text.replace('\n', '') # remove line breaks
         if len(message_text) > 420: # if message too long, only keep first 420 chrs
@@ -225,7 +226,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             message_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
 
         ### send message to chat room ###
-        await context.bot.send_message(chat_id=chat_id, text=message_text)
+        await context.bot.send_message(chat_id=chat_id, message_thread_id=thread_id, text=message_text)
         print(f'({os.getenv("PERSONA")})AI MESSAGE: {message_text}')
 
         # wait a while for other bots to finish updating their folders
