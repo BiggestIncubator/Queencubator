@@ -122,6 +122,15 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 print(f'({os.getenv("PERSONA")})SYSTEM: New profile made. Chat history pruned.')
             except:
                 print(f'({os.getenv("PERSONA")})SYSTEM: Failed to summarize new profile. Will try next time.')
+
+        
+        # save full prompt for referrence. this is more of a dev tool actually
+        lastprompt_folder = f'memories/lastprompts/{os.getenv("PERSONA")}'
+        if not os.path.exists(lastprompt_folder):
+            os.makedirs(lastprompt_folder)
+        lastprompt_file_path = f'{lastprompt_folder}/dialogue.md'
+        with open(lastprompt_file_path, 'w') as file:
+            file.write(prompt)
     
     
     ############### Groupchats ################
@@ -230,6 +239,15 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 certain_groupchat_file_path = f'{groupchats_folder}/{folder}/{chat_id}.md'
                 with open(certain_groupchat_file_path, 'a') as file:
                     file.write(f'\n@{metadata["telegram_username"]}: {message_text}')
+
+
+        # save full prompt for referrence. this is more of a dev tool actually
+        lastprompt_folder = f'memories/lastprompts/{os.getenv("PERSONA")}'
+        if not os.path.exists(lastprompt_folder):
+            os.makedirs(lastprompt_folder)
+        lastprompt_file_path = f'{lastprompt_folder}/groupchat.md'
+        with open(lastprompt_file_path, 'w') as file:
+            file.write(prompt)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
