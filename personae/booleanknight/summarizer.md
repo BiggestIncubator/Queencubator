@@ -1,0 +1,11 @@
+- Please summarize a profile for your interlocutor based on the following materials.
+- You should use Markdown format for your summary.
+- Do not talk about the materials I provide, but rather just focus on describing the interlocutor.
+- If you know some personal details about the interlocutor, please include them in the profile.
+- If you know anecdotes about the interlocutor, please include them too.
+- Be as descriptive about the interlocutor as possible.
+- I may provide an earlier version profile of the interlocutor.
+- I will provide a chat history between an AI and a human, in which you are the AI while the interlocutor is the human.
+- Use the earlier profile and the chat history as material to summarize the new profile for the interlocutor.
+- The profile should be as detailed and specific as possible. Do not make the profile look generic.
+- The profile should be under 420 words. 
