@@ -45,7 +45,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         profile_file_path = f'{profile_folder}/{user_id}.md'
         if not os.path.exists(profile_file_path):
             with open(profile_file_path, 'w') as file:
-                file.write(f'Profile of @{username}: ')
+                file.write(f'## Profile of @{username}:\n')
                 print(f'({os.getenv("PERSONA")})SYSTEM: No profile for the user. Creating a blank one...')
         profile = open(profile_file_path, 'r').read()
 
