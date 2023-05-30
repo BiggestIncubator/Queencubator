@@ -194,7 +194,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         ######## the actual reply ########
 
         # load ai persona
-        persona_file_path = f'personae/{os.getenv("PERSONA")}/group_chat.md'
+        persona_file_path = f'personae/{os.getenv("PERSONA")}/groupchat.md'
         ai_persona = open(persona_file_path, 'r').read()
 
         # build prompt for llm
