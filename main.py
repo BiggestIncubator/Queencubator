@@ -84,6 +84,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             print(f'({os.getenv("PERSONA")})SYSTEM: Max retries exceeded. Giving up.')
             reply_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
 
+        # print raw output before filtering them
+        print(f'({os.getenv("PERSONA")})LLM RAW OUTPUT: {reply_text}')
         
         # filter the reply text so that it complies to our intended reply format
         # (because llm outputs are unreliable)
@@ -232,6 +234,9 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if retries == max_retries:
             print(f'({os.getenv("PERSONA")})SYSTEM: Max retries exceeded. Giving up.')
             message_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
+
+        # print raw output before filtering them
+        print(f'({os.getenv("PERSONA")})LLM RAW OUTPUT: {message_text}')
 
         # filter the reply text so that it complies to our intended reply format
         # (because llm outputs are unreliable)
