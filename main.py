@@ -5,7 +5,7 @@ import time
 import openai
 import random
 from dotenv import load_dotenv
-from telegram import Update
+from telegram import Update, constants
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -90,11 +90,16 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         # filter the reply text so that it complies to our intended reply format
         # (because llm outputs are unreliable)
         sys.path.append(f'personae/{os.getenv("PERSONA")}')
-        from filterer import filterer # import the filterer.py file from the persona's folder
-        reply_text = filterer(reply_text)
+        from postprocess import postprocess # import the filterer.py file from the persona's folder
+        reply_text = postprocess(reply_text)
 
         ### send reply back to user on telegram ###
-        await update.message.reply_text(f'{reply_text}')
+        # we're using Markdownv2. some characters must be escaped before we send them!!!
+        await update.message.reply_text(
+            text=reply_text,
+            parse_mode=constants.ParseMode.MARKDOWN_V2, # notice that we're use MarkdownV2
+            disable_web_page_preview=True # don't show link previews
+            )
         print(f'({os.getenv("PERSONA")})REPLY: {reply_text}')
 
         # save new chat history
@@ -241,11 +246,18 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         # filter the reply text so that it complies to our intended reply format
         # (because llm outputs are unreliable)
         sys.path.append(f'personae/{os.getenv("PERSONA")}')
-        from filterer import filterer # import the filterer.py file from the persona's folder
-        message_text = filterer(message_text)
+        from postprocess import postprocess # import the filterer.py file from the persona's folder
+        message_text = postprocess(message_text)
 
         ### send message to chat room ###
-        await context.bot.send_message(chat_id=chat_id, message_thread_id=thread_id, text=message_text)
+        # we're using Markdownv2. some characters must be escaped before we send them!!!
+        await context.bot.send_message(
+            chat_id=chat_id,
+            message_thread_id=thread_id,
+            text=message_text, 
+            parse_mode=constants.ParseMode.MARKDOWN_V2, # notice that we're use MarkdownV2
+            disable_web_page_preview=True # don't show link previews
+            )
         print(f'({os.getenv("PERSONA")})AI MESSAGE: {message_text}')
 
         # wait a while for other bots to finish updating their folders
