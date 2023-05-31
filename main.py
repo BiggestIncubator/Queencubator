@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import time
 import openai
@@ -82,6 +83,13 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if retries == max_retries:
             print(f'({os.getenv("PERSONA")})SYSTEM: Max retries exceeded. Giving up.')
             reply_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
+
+        
+        # filter the reply text so that it complies to our intended reply format
+        # (because llm outputs are unreliable)
+        sys.path.append(f'personae/{os.getenv("PERSONA")}')
+        from filterer import filterer # import the filterer.py file from the persona's folder
+        reply_text = filterer(reply_text)
 
         ### send reply back to user on telegram ###
         await update.message.reply_text(f'{reply_text}')
@@ -224,6 +232,12 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if retries == max_retries:
             print(f'({os.getenv("PERSONA")})SYSTEM: Max retries exceeded. Giving up.')
             message_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
+
+        # filter the reply text so that it complies to our intended reply format
+        # (because llm outputs are unreliable)
+        sys.path.append(f'personae/{os.getenv("PERSONA")}')
+        from filterer import filterer # import the filterer.py file from the persona's folder
+        message_text = filterer(message_text)
 
         ### send message to chat room ###
         await context.bot.send_message(chat_id=chat_id, message_thread_id=thread_id, text=message_text)
