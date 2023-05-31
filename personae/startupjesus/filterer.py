@@ -2,6 +2,7 @@
 
 def filterer(ai_output:str) -> str:
 
-    # Add filter logic here
+    import re
+    reply = re.sub(r'#\w+', '', ai_output) # remove hashtags
 
-    return ai_output
+    return reply
