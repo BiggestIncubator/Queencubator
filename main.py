@@ -50,8 +50,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 print(f'({os.getenv("PERSONA")})SYSTEM: No profile for the user. Creating a blank one...')
         profile = open(profile_file_path, 'r').read()
 
-        # load ai persona
-        persona_file_path = f'personae/{os.getenv("PERSONA")}/persona.md'
+        # load ai dialogue persona
+        persona_file_path = f'personae/{os.getenv("PERSONA")}/dialogue.md'
         ai_persona = open(persona_file_path, 'r').read()
 
         # build the prompt for llm
@@ -208,7 +208,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         
         ######## the actual reply ########
 
-        # load ai persona
+        # load ai groupchat persona
         persona_file_path = f'personae/{os.getenv("PERSONA")}/groupchat.md'
         ai_persona = open(persona_file_path, 'r').read()
 
