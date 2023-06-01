@@ -1,7 +1,6 @@
 {
   "persona": "booleanknight",
   "telegram_username": "BooleanKnightBot",
-  "has_memory": false,
   "summon_spells": ["boolean", "true or false", "yes or no"],
   "reply_frequency": 210,
   "hyperlinks": []

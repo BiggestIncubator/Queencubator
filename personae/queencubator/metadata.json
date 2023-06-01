@@ -2,7 +2,6 @@
   "persona": "queencubator",
   "telegram_username": "QueencubatorBot",
   "summon_spells": ["my queen", "your queen", "the queen", "majesty"],
-  "has_memory": true,
   "reply_frequency": 420,
   "hyperlinks": [
     {
