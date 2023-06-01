@@ -2,5 +2,19 @@
   "persona": "queencubator",
   "telegram_username": "QueencubatorBot",
   "summon_spells": ["my queen", "your queen", "the queen", "majesty"],
-  "reply_frequency": 420
+  "reply_frequency": 420,
+  "hyperlinks": [
+    {
+      "keyword": "Biggest Incubator",
+      "url": "https://biggestlab.io/"
+    },
+    {
+      "keyword": "Pocket Guide",
+      "url": "https://www.ycombinator.com/library/4D-yc-s-essential-startup-advice"
+    },
+    {
+      "keyword": "things that don't scale",
+      "url": "http://paulgraham.com/ds.html"
+    }
+  ]
 }

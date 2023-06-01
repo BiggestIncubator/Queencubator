@@ -1,10 +1,11 @@
 import os
+import sys
 import json
 import time
 import openai
 import random
 from dotenv import load_dotenv
-from telegram import Update
+from telegram import Update, constants
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -45,12 +46,12 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         profile_file_path = f'{profile_folder}/{user_id}.md'
         if not os.path.exists(profile_file_path):
             with open(profile_file_path, 'w') as file:
-                file.write(f'Profile of @{username}: ')
+                file.write(f'## Profile of @{username}:\n')
                 print(f'({os.getenv("PERSONA")})SYSTEM: No profile for the user. Creating a blank one...')
         profile = open(profile_file_path, 'r').read()
 
-        # load ai persona
-        persona_file_path = f'personae/{os.getenv("PERSONA")}/persona.md'
+        # load ai dialogue persona
+        persona_file_path = f'personae/{os.getenv("PERSONA")}/dialogue.md'
         ai_persona = open(persona_file_path, 'r').read()
 
         # build the prompt for llm
@@ -83,8 +84,26 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             print(f'({os.getenv("PERSONA")})SYSTEM: Max retries exceeded. Giving up.')
             reply_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
 
+        # print raw output before filtering them
+        print(f'({os.getenv("PERSONA")})LLM RAW OUTPUT: {reply_text}')
+
+        # load persona metadata
+        metadata = json.loads(open(f'personae/{os.getenv("PERSONA")}/metadata.json', 'r').read())
+        
+        # filter the reply text so that it complies to our intended reply format
+        # (because llm outputs are unreliable)
+        sys.path.append(f'personae/{os.getenv("PERSONA")}')
+        from postprocess import postprocess # import the filterer.py file from the persona's folder
+        hyperlinks = metadata['hyperlinks'] # extract hyperlinks from metadata to feed into postproccess
+        reply_text = postprocess(reply_text, hyperlinks)
+
         ### send reply back to user on telegram ###
-        await update.message.reply_text(f'{reply_text}')
+        # we're using Markdownv2. some characters must be escaped before we send them!!!
+        await update.message.reply_text(
+            text=reply_text,
+            parse_mode=constants.ParseMode.MARKDOWN_V2, # notice that we're use MarkdownV2
+            disable_web_page_preview=True # don't show link previews
+            )
         print(f'({os.getenv("PERSONA")})REPLY: {reply_text}')
 
         # save new chat history
@@ -138,6 +157,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         username = update.message.from_user.username
         user_id = update.message.from_user.id
         chat_id = update.message.chat_id
+        thread_id = update.message.message_thread_id # if in group topics
         message_text = update.message.text
         message_text = message_text.replace('\n', '') # remove line breaks
         if len(message_text) > 420: # if message too long, only keep first 420 chrs
@@ -192,8 +212,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         
         ######## the actual reply ########
 
-        # load ai persona
-        persona_file_path = f'personae/{os.getenv("PERSONA")}/group_chat.md'
+        # load ai groupchat persona
+        persona_file_path = f'personae/{os.getenv("PERSONA")}/groupchat.md'
         ai_persona = open(persona_file_path, 'r').read()
 
         # build prompt for llm
@@ -224,8 +244,25 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             print(f'({os.getenv("PERSONA")})SYSTEM: Max retries exceeded. Giving up.')
             message_text = open(f'personae/{os.getenv("PERSONA")}/busy_text.md', 'r').read()
 
+        # print raw output before filtering them
+        print(f'({os.getenv("PERSONA")})LLM RAW OUTPUT: {message_text}')
+
+        # filter the reply text so that it complies to our intended reply format
+        # (because llm outputs are unreliable)
+        sys.path.append(f'personae/{os.getenv("PERSONA")}')
+        from postprocess import postprocess # import the filterer.py file from the persona's folder
+        hyperlinks = metadata['hyperlinks'] # extract hyperlinks from metadata to feed into postproccess
+        message_text = postprocess(message_text, hyperlinks)
+
         ### send message to chat room ###
-        await context.bot.send_message(chat_id=chat_id, text=message_text)
+        # we're using Markdownv2. some characters must be escaped before we send them!!!
+        await context.bot.send_message(
+            chat_id=chat_id,
+            message_thread_id=thread_id,
+            text=message_text, 
+            parse_mode=constants.ParseMode.MARKDOWN_V2, # notice that we're use MarkdownV2
+            disable_web_page_preview=True # don't show link previews
+            )
         print(f'({os.getenv("PERSONA")})AI MESSAGE: {message_text}')
 
         # wait a while for other bots to finish updating their folders
