@@ -1,4 +1,3 @@
-services:
-    moodgpt:
+    ${TAG_PERSONA}:
         volumes:
         - ./memories:/queencubator/memories
