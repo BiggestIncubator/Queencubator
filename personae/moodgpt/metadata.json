@@ -2,5 +2,7 @@
   "persona": "moodgpt",
   "telegram_username": "MoodGPTbot",
   "summon_spells": ["moodgpt", "therapist"],
-  "reply_frequency": 420
+  "has_memory": true,
+  "reply_frequency": 420,
+  "hyperlinks": []
 }

@@ -2,5 +2,7 @@
   "persona": "startupjesus",
   "telegram_username": "StartupJesusBot",
   "summon_spells": ["jesus", "christ"],
-  "reply_frequency": 420
+  "has_memory": true,
+  "reply_frequency": 420,
+  "hyperlinks": []
 }

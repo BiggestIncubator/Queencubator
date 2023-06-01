@@ -1,6 +1,8 @@
 {
   "persona": "integerknight",
   "telegram_username": "IntegerKnightBot",
+  "has_memory": false,
   "summon_spells": ["integer"],
-  "reply_frequency": 210
+  "reply_frequency": 210,
+  "hyperlinks": []
 }
