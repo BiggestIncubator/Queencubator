@@ -1,5 +1,6 @@
 import re
 
+# i think only filterer should be different for each bot, the rest should be the same
 def filterer(ai_output:str) -> str:
 
     import re
@@ -34,14 +35,19 @@ def escape_markdown_v2(text:str) -> str:
     return text
 
 
-def add_hyperlinks(reply:str) -> str:
-    """Add hyperlinks to the text, use MarkdownV2 format (BigLab)[https://biggestlab.io]"""
+def add_hyperlinks(reply:str, hyperlinks:list) -> str:
+    """Add hyperlinks to the text, use MarkdownV2 format: (BigLab)[https://biggestlab.io]"""
+    """hyperlinks is a list of dicts, each dict has "keyword" and "url"."""
 
-    return f'{reply} [BigLab](https://biggestlab.io/)'
+    for hyperlink in hyperlinks:
+        md_link = f'[{hyperlink["keyword"]}]({hyperlink["url"]})'
+        reply = reply.replace(hyperlink['keyword'], md_link)
+
+    return reply
 
 
-def postprocess(reply:str) -> str:
+def postprocess(reply:str, hyperlinks:list) -> str:
     reply = filterer(reply)
     reply = escape_markdown_v2(reply)
-    reply = add_hyperlinks(reply)
+    reply = add_hyperlinks(reply, hyperlinks)
     return reply

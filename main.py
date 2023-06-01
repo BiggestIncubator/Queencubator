@@ -86,12 +86,16 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
         # print raw output before filtering them
         print(f'({os.getenv("PERSONA")})LLM RAW OUTPUT: {reply_text}')
+
+        # load persona metadata
+        metadata = json.loads(open(f'personae/{os.getenv("PERSONA")}/metadata.json', 'r').read())
         
         # filter the reply text so that it complies to our intended reply format
         # (because llm outputs are unreliable)
         sys.path.append(f'personae/{os.getenv("PERSONA")}')
         from postprocess import postprocess # import the filterer.py file from the persona's folder
-        reply_text = postprocess(reply_text)
+        hyperlinks = metadata['hyperlinks'] # extract hyperlinks from metadata to feed into postproccess
+        reply_text = postprocess(reply_text, hyperlinks)
 
         ### send reply back to user on telegram ###
         # we're using Markdownv2. some characters must be escaped before we send them!!!
@@ -247,7 +251,8 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         # (because llm outputs are unreliable)
         sys.path.append(f'personae/{os.getenv("PERSONA")}')
         from postprocess import postprocess # import the filterer.py file from the persona's folder
-        message_text = postprocess(message_text)
+        hyperlinks = metadata['hyperlinks'] # extract hyperlinks from metadata to feed into postproccess
+        message_text = postprocess(message_text, hyperlinks)
 
         ### send message to chat room ###
         # we're using Markdownv2. some characters must be escaped before we send them!!!

@@ -34,10 +34,15 @@ def escape_markdown_v2(text:str) -> str:
     return text
 
 
-def add_hyperlinks(reply:str) -> str:
-    """Add hyperlinks to the text, use MarkdownV2 format (BigLab)[https://biggestlab.io]"""
+def add_hyperlinks(reply:str, hyperlinks:list) -> str:
+    """Add hyperlinks to the text, use MarkdownV2 format: (BigLab)[https://biggestlab.io]"""
+    """hyperlinks is a list of dicts, each dict has "keyword" and "url"."""
 
-    return f'{reply}'
+    for hyperlink in hyperlinks:
+        md_link = f'[{hyperlink["keyword"]}]({hyperlink["url"]})'
+        reply = reply.replace(hyperlink['keyword'], md_link)
+
+    return reply
 
 
 def postprocess(reply:str) -> str:
