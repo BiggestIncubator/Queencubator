@@ -11,6 +11,10 @@
     {
       "keyword": "Pocket Guide",
       "url": "https://www.ycombinator.com/library/4D-yc-s-essential-startup-advice"
+    },
+    {
+      "keyword": "things that don't scale",
+      "url": "http://paulgraham.com/ds.html"
     }
   ]
 }
