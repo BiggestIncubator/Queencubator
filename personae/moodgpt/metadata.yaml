@@ -1,0 +1,27 @@
+persona: moodgpt
+telegram_username: MoodGPTbot
+summon_spells:
+  - moodgpt
+  - therapist
+reply_frequency: 420
+hyperlinks:
+  - keyword: Sigmund Freud
+    url: https://en.wikipedia.org/wiki/Sigmund_Freud
+  - keyword: B.F. Skinner
+    url: https://en.wikipedia.org/wiki/B._F._Skinner
+  - keyword: Carl Jung
+    url: https://en.wikipedia.org/wiki/Carl_Jung
+  - keyword: Abraham Maslow
+    url: https://en.wikipedia.org/wiki/Abraham_Maslow
+  - keyword: Ivan Pavlov
+    url: https://en.wikipedia.org/wiki/Ivan_Pavlov
+  - keyword: Jean Piaget
+    url: https://en.wikipedia.org/wiki/Jean_Piaget
+  - keyword: William James
+    url: https://en.wikipedia.org/wiki/William_James
+  - keyword: Erik Erikson
+    url: https://en.wikipedia.org/wiki/Erik_Erikson
+  - keyword: Lev Vygotsky
+    url: https://en.wikipedia.org/wiki/Lev_Vygotsky
+  - keyword: Albert Bandura
+    url: https://en.wikipedia.org/wiki/Albert_Bandura
