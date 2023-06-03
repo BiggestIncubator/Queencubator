@@ -122,7 +122,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             # build summarizer prompt for llm
             summarizer_prompt = f'{summarizer}\n'
             summarizer_prompt += f'\nPrevious Profile:\n{profile}\n'
-            summarizer_prompt += f'\nRecent Chat History:\n{new_chat_history}\n'
+            summarizer_prompt += f'\nRecent Chat History:\n{chat_history}\n'
 
             try:
                 summarize_completion = openai.ChatCompletion.create(
