@@ -6,11 +6,6 @@ services:
         volumes:
         - /opt/data/queencubator/memories:/queencubator/memories
         restart: always
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        env_file:
-            - .env
         command:
             scripts/booleanknight.sh
     integerknight:
@@ -19,37 +14,14 @@ services:
         volumes:
         - /opt/data/queencubator/memories:/queencubator/memories
         restart: always
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        env_file:
-            - .env
         command:
             scripts/integerknight.sh
-    internknight:
-        container_name: internknight
-        image: ${REGISTRY:?REGISTRY is required}queencubator:${TAG_QUEEN:?TAG_QUEEN is required}
-        volumes:
-        - /opt/data/queencubator/memories:/queencubator/memories
-        restart: always
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        env_file:
-            - .env
-        command:
-            scripts/internknight.sh
     moodgpt:
         container_name: moodgpt
         image: ${REGISTRY:?REGISTRY is required}queencubator:${TAG_QUEEN:?TAG_QUEEN is required}
         volumes:
         - /opt/data/queencubator/memories:/queencubator/memories
         restart: always
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        env_file:
-            - .env
         command:
             scripts/moodgpt.sh
     queencubator:
@@ -58,11 +30,6 @@ services:
         volumes:
         - /opt/data/queencubator/memories:/queencubator/memories
         restart: always
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        env_file:
-            - .env
         command:
             scripts/queencubator.sh
     startupjesus:
@@ -71,10 +38,5 @@ services:
         volumes:
         - /opt/data/queencubator/memories:/queencubator/memories
         restart: always
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        env_file:
-            - .env
         command:
             scripts/startupjesus.sh

@@ -4,10 +4,5 @@
         volumes:
         - /opt/data/queencubator/memories:/queencubator/memories
         restart: always
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        env_file:
-            - .env
         command:
             scripts/${TAG_PERSONA}.sh
