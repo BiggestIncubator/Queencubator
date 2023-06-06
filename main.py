@@ -1,6 +1,6 @@
 import os
 import sys
-import json
+import yaml
 import time
 import openai
 import random
@@ -88,7 +88,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         print(f'({os.getenv("PERSONA")})LLM RAW OUTPUT: {reply_text}')
 
         # load persona metadata
-        metadata = json.loads(open(f'personae/{os.getenv("PERSONA")}/metadata.json', 'r').read())
+        metadata = yaml.safe_load(open(f'personae/{os.getenv("PERSONA")}/metadata.yaml', 'r'))
         
         # filter the reply text so that it complies to our intended reply format
         # (because llm outputs are unreliable)
@@ -122,7 +122,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             # build summarizer prompt for llm
             summarizer_prompt = f'{summarizer}\n'
             summarizer_prompt += f'\nPrevious Profile:\n{profile}\n'
-            summarizer_prompt += f'\nRecent Chat History:\n{new_chat_history}\n'
+            summarizer_prompt += f'\nRecent Chat History:\n{chat_history}\n'
 
             try:
                 summarize_completion = openai.ChatCompletion.create(
@@ -186,7 +186,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             file.write(chat_history)
 
         # load persona metadata
-        metadata = json.loads(open(f'personae/{os.getenv("PERSONA")}/metadata.json', 'r').read())
+        metadata = yaml.safe_load(open(f'personae/{os.getenv("PERSONA")}/metadata.yaml', 'r'))
 
         ### Decide whether to reply message ###
         is_reply = False

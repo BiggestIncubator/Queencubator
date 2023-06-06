@@ -1,0 +1,10 @@
+---
+# YAML
+persona: booleanknight
+telegram_username: BooleanKnightBot
+summon_spells:
+  - boolean
+  - true or false
+  - yes or no
+reply_frequency: 210
+hyperlinks: []

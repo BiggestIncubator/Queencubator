@@ -1,0 +1,8 @@
+---
+# YAML
+persona: internknight
+telegram_username: InternKnightBot
+summon_spells:
+  - intern
+reply_frequency: 420
+hyperlinks: []
