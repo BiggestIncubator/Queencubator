@@ -1,16 +1,7 @@
 services:
-    booleanknight:
-        volumes:
-        - ./memories:/queencubator/memories
-    integerknight:
-        volumes:
-        - ./memories:/queencubator/memories
     moodgpt:
         volumes:
         - ./memories:/queencubator/memories
     queencubator:
-        volumes:
-        - ./memories:/queencubator/memories
-    startupjesus:
         volumes:
         - ./memories:/queencubator/memories

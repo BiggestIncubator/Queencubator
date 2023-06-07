@@ -1,21 +1,5 @@
 version: '3.7'
 services:
-    booleanknight:
-        container_name: booleanknight
-        image: ${REGISTRY:?REGISTRY is required}queencubator:${TAG_QUEEN:?TAG_QUEEN is required}
-        volumes:
-        - /opt/data/queencubator/memories:/queencubator/memories
-        restart: always
-        command:
-            scripts/booleanknight.sh
-    integerknight:
-        container_name: integerknight
-        image: ${REGISTRY:?REGISTRY is required}queencubator:${TAG_QUEEN:?TAG_QUEEN is required}
-        volumes:
-        - /opt/data/queencubator/memories:/queencubator/memories
-        restart: always
-        command:
-            scripts/integerknight.sh
     moodgpt:
         container_name: moodgpt
         image: ${REGISTRY:?REGISTRY is required}queencubator:${TAG_QUEEN:?TAG_QUEEN is required}
@@ -32,11 +16,3 @@ services:
         restart: always
         command:
             scripts/queencubator.sh
-    startupjesus:
-        container_name: startupjesus
-        image: ${REGISTRY:?REGISTRY is required}queencubator:${TAG_QUEEN:?TAG_QUEEN is required}
-        volumes:
-        - /opt/data/queencubator/memories:/queencubator/memories
-        restart: always
-        command:
-            scripts/startupjesus.sh

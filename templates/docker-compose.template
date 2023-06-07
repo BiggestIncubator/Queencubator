@@ -1,8 +1,8 @@
-    ${TAG_PERSONA}:
-        container_name: ${TAG_PERSONA}
+    ${PERSONAE}:
+        container_name: ${PERSONAE}
         image: ${REGISTRY:?REGISTRY is required}queencubator:${TAG_QUEEN:?TAG_QUEEN is required}
         volumes:
         - /opt/data/queencubator/memories:/queencubator/memories
         restart: always
         command:
-            scripts/${TAG_PERSONA}.sh
+            scripts/${PERSONAE}.sh

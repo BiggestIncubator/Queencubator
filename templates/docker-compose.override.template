@@ -1,3 +1,3 @@
-    ${TAG_PERSONA}:
+    ${PERSONAE}:
         volumes:
         - ./memories:/queencubator/memories
