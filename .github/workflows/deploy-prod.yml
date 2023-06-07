@@ -50,8 +50,8 @@ jobs:
                   url: https://vault.biggestfan.net
                   token: ${{ secrets.VAULT_TOKEN }}
                   secrets: |
-                      dev/data/MoodGPT DEPLOY_KEY ;
-                      dev/data/MoodGPT BACKEND_ENV_PROD ;
+                      dev/data/Queencubator DEPLOY_KEY ;
+                      dev/data/Queencubator BACKEND_ENV_PROD ;
 
             - name: Build package to deploy
               run: |

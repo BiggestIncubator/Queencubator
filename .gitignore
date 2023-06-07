@@ -1,5 +1,7 @@
 __pycache__/
 memories/
-#scripts/
+scripts/*.sh
 *.pyc
 scripts/secrets/*.env
+docker-compose.yaml
+docker-compose.override.yaml
