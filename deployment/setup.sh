@@ -10,7 +10,7 @@ printf 'services:\n' > docker-compose.override.yaml
 
 # Identifies the scripts in the scripts directory
 # FILE=$(ls scripts/secrets/*.env)
-FILE=$(cat newbots.txt)
+FILE=$(cat newbot.txt)
 
 # Loop that removes the path to the script and the .sh producing a list of filenames
 for LIST in $FILE; do
