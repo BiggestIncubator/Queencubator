@@ -2,7 +2,7 @@
 
 set -eu
 
-#cd "$(dirname "$0")."
+cd "$(dirname "$0")."
 
 # Prints the header for the docker compose file and override file
 printf "version: '3.7'\nservices:\n" > docker-compose.yaml

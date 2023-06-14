@@ -6,7 +6,7 @@ SPECIFIC_COMPOSE_FILE ?= -f docker-compose.yaml
 OVERRIDE_VOLUMES_FILE ?= -f docker-compose.override.yaml
 
 build:
-	./setup.sh && docker build -t ${REG}:${TAG_QUEEN} .
+	./deployment/setup.sh && docker build -t ${REG}:${TAG_QUEEN} .
 
 test: build
 	docker-compose $(SPECIFIC_COMPOSE_FILE) $(OVERRIDE_VOLUMES_FILE) up -d
