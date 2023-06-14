@@ -29,10 +29,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      # TODO: Run test before build
-      - name: Generate compose and scripts
-        run: |
-         cd deployment/${{ github.repository }} && ./deployment/setup.sh
+#      # TODO: Run test before build
+#      - name: Generate compose and scripts
+#        run: |
+#         cd deployment/${{ github.repository }} && ./deployment/setup.sh
 
       - name: Build docker image
         run: |
