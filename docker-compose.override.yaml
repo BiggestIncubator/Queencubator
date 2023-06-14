@@ -1,7 +1,0 @@
-services:
-    moodgpt:
-        volumes:
-        - ./memories:/queencubator/memories
-    queencubator:
-        volumes:
-        - ./memories:/queencubator/memories
