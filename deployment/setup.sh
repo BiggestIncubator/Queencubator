@@ -27,4 +27,3 @@ for LIST in $FILE; do
       chmod +x scripts/*.sh
     done
 done
-make build test
