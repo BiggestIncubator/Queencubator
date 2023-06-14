@@ -17,8 +17,7 @@ jobs:
     deployment:
         # The type of runner that the job will run on
         #runs-on: [self-hosted]
-        runs-on: ubuntu-latest
-         
+        runs-on: ubuntu:latest
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
             - name: Set env
@@ -55,8 +54,9 @@ jobs:
 
             - name: Build package to deploy
               run: |
-                  ./deployment/generate_deployment.sh -t ${{ secrets.VAULT_TOKEN }} -p dev/data/MoodGPT -f ${{ github.repository }} -v BACKEND_ENV_PROD
-                  echo "IP=dev.stylegenie.biggestlab.io" >> $GITHUB_ENV
+                  ./deployment/setup.sh
+                  ./deployment/generate_deployment.sh -t ${{ secrets.VAULT_TOKEN }} -p dev/data/Queencubator -f ${{ github.repository }} -v BACKEND_ENV_PROD
+                  echo "IP=dev.queencubator.biggestlab.io" >> $GITHUB_ENV
                   echo "PORT=10104" >> $GITHUB_ENV
                   if test ! -f deployment.tgz; then
                     echo "Deploy package not found." && exit 1
