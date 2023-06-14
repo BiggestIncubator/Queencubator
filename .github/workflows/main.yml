@@ -30,7 +30,9 @@ jobs:
           fetch-depth: 0
 
       # TODO: Run test before build
-
+      - generate: Generate compose and scripts
+      - run: |
+          ./deployment/setup.sh
       - name: Build docker image
         run: |
           SPECIFIC_COMPOSE_FILE="-f docker-compose.yaml" make build

@@ -53,7 +53,6 @@ jobs:
 
             - name: Build package to deploy
               run: |
-                  ./deployment/setup.sh
                   ./deployment/generate_deployment.sh -t ${{ secrets.VAULT_TOKEN }} -p dev/data/Queencubator -f ${{ github.repository }} -v BACKEND_ENV_PROD
                   echo "IP=dev.queencubator.biggestlab.io" >> $GITHUB_ENV
                   echo "PORT=10104" >> $GITHUB_ENV
