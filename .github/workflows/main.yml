@@ -32,7 +32,7 @@ jobs:
       # TODO: Run test before build
       - name: Generate compose and scripts
         run: |
-          ./setup.sh
+          ./deployment/setup.sh -p dev/data/Queencubator
 
       - name: Build docker image
         run: |
