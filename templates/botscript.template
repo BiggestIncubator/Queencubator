@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export=$PERSONAE
+export OPENAI_API_KEY= $(grep "OPENAI" scripts/secrets/${PERSONAE}.env)
+export TELEGRAM_BOT_TOKEN= $(grep "TELEGRAM" scripts/secrets/${PERSONAE}.env)
+
+python3 main.py

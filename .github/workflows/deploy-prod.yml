@@ -1,0 +1,92 @@
+name: Deploy production
+
+# Controls when the action will run.
+on:
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: "Tag (Optional with priotity)"
+                required: false
+            commit:
+                description: "Commit (Optional)"
+                required: false
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+    # This workflow contains a single job called "build"
+    deployment:
+        # The type of runner that the job will run on
+        runs-on: [self-hosted]
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            - name: Set env
+              run: |
+                  if [ ! -z ${{ inputs.tag }} ]; then
+                    echo "REF=refs/tags/${{ inputs.tag }}" >> $GITHUB_ENV
+                  elif [ ! -z ${{ inputs.commit }} ]; then
+                    echo "REF=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+                    echo "COMMIT=${{ inputs.commit }}" >> $GITHUB_ENV
+                  else
+                    echo "REF=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+                  fi
+
+            - name: Clone main repository
+              uses: actions/checkout@v3
+              with:
+                  ref: ${{ env.REF }}
+                  fetch-depth: 0
+
+            - name: Checkout to the right commit
+              run: |
+                  if [ ! -z ${{ env.COMMIT }} ]; then
+                    git checkout ${{ env.COMMIT }}
+                  fi
+
+            - name: Get secret from Vault to env vars
+              uses: hashicorp/vault-action@v2.4.0
+              with:
+                  url: https://vault.biggestfan.net
+                  token: ${{ secrets.VAULT_TOKEN }}
+                  secrets: |
+                      dev/data/Queencubator DEPLOY_KEY ;
+                      dev/data/Queencubator BACKEND_ENV_PROD ;
+
+            - name: Build package to deploy
+              run: |
+                  ./deployment/generate_deployment.sh -t ${{ secrets.VAULT_TOKEN }} -p dev/data/Queencubator -f ${{ github.repository }} -v BACKEND_ENV_PROD
+                  echo "IP=dev.queencubator.biggestlab.io" >> $GITHUB_ENV
+                  echo "PORT=10104" >> $GITHUB_ENV
+                  if test ! -f deployment.tgz; then
+                    echo "Deploy package not found." && exit 1
+                  fi
+
+            - name: Transfer package to targeted server
+              uses: appleboy/scp-action@master
+              with:
+                  host: ${{ env.IP }}
+                  username: biggestfan
+                  key: ${{ env.DEPLOY_KEY }}
+                  port: ${{ env.PORT }}
+                  source: "deployment.tgz"
+                  target: "/home/biggestfan"
+
+            - name: Deploy package
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ env.IP }}
+                  username: biggestfan
+                  key: ${{ env.DEPLOY_KEY }}
+                  port: ${{ env.PORT }}
+                  script: |
+                      cd ~ && tar -xvf deployment.tgz
+                      cd deployment/${{ github.repository }} && ./deploy.sh
+
+            - name: Deploy detail
+              run: |
+                  echo "The deployment info:"
+                  echo "Branch/Tag: ${{ env.REF }}"
+                  echo "Input tag: ${{ inputs.tag }}"
+                  echo "Input commit: ${{ inputs.commit }}"
+                  tag=$(git describe --always --tags --dirty --abbrev=7)
+                  echo "Tag on docker image: ${tag}"
+                  echo "Target server: ${{ env.IP }}"
