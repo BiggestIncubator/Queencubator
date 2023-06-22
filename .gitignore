@@ -3,5 +3,6 @@ memories/
 scripts/*.sh
 *.pyc
 scripts/secrets/*.env
+bots/*
 docker-compose.yaml
 docker-compose.override.yaml
