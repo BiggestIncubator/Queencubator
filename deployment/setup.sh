@@ -8,17 +8,19 @@ cd "$(dirname "$0")."
 if [ -s bots/decomission ]; then
 	DECOM=$(comm -12 <(sort bots/decomission) <(sort bots/bots))
 fi
+REMAINING=$(comm -3 <(sort bots/decomission) <(sort bots/bots))
 # New bots
 # Checks newbots for bots to add, lists bots to keep as a string. Ignores existing bots.
 if [ -s bots/newbots ]; then
 	NEWBOTS=$(comm -23 <(sort bots/newbots) <(sort bots/bots))
+	ACTIVEBOTS="$REMAINING $NEWBOTS"
+	for BOTSFILE in $NEWBOTS; do 
+		echo $BOTSFILE >> bots/bots
+	done
+else
+#	NEWBOTS=$(comm -23 <(sort bots/newbots) <(sort bots/bots))
+	ACTIVEBOTS="$REMAINING"
 fi
-# Defines bots for docker-compose file and writes new bots to the bots file
-REMAINING=$(comm -3 <(sort bots/decomission) <(sort bots/bots))
-ACTIVEBOTS="$REMAINING $NEWBOTS"
-for BOTSFILE in $NEWBOTS; do 
-	echo $BOTSFILE >> bots/bots
-done
 
 # Prints the header for the docker compose file and override file
 printf "version: '3.7'\nservices:\n" > docker-compose.yaml
