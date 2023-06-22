@@ -5,18 +5,20 @@ export TAG_QUEEN=$(shell git describe --always --tags --dirty --abbrev=7)
 SPECIFIC_COMPOSE_FILE ?= -f docker-compose.yaml
 OVERRIDE_VOLUMES_FILE ?= -f docker-compose.override.yaml
 
-build:
-	deployment/./setup.sh && docker build -t ${REG}:${TAG_QUEEN} . && rm docker-compose.*
+changebots:
+	deployment/./decom-bot.sh && deployment/./addbots.sh
+	
+build: down
+	deployment/./setup.sh && docker build -t ${REG}:${TAG_QUEEN} .
 
-test: build
-	deployment/./setup.sh && docker-compose $(SPECIFIC_COMPOSE_FILE) $(OVERRIDE_VOLUMES_FILE) up -d && rm docker-compose.*
+test: down build
+	deployment/./setup.sh && docker-compose $(SPECIFIC_COMPOSE_FILE) $(OVERRIDE_VOLUMES_FILE) up -d
 
-up:
-	deployment/./setup.sh && docker-compose $(SPECIFIC_COMPOSE_FILE) up -d && rm docker-compose.*
+up: down
+	deployment/./setup.sh && docker-compose $(SPECIFIC_COMPOSE_FILE) up -d
 
 down:
-	deployment/./setup.sh && docker-compose $(SPECIFIC_COMPOSE_FILE) down -v && rm docker-compose.*
+	docker-compose $(SPECIFIC_COMPOSE_FILE) down -v
 
-push:
-#	deployment/./setup.sh && docker-compose $(SPECIFIC_COMPOSE_FILE) push && rm docker-compose.*
+push: down
 	docker image push ${REG}:${TAG_QUEEN}
